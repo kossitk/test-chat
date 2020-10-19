@@ -1,9 +1,9 @@
 <?php
 
-namespace Router;
+namespace App\Router;
 
 
-use Response\Response;
+use App\Response\Response;
 
 class Router
 {
@@ -11,12 +11,12 @@ class Router
     private $routes = [
         [
             'path'       => '/',
-            'controller' => '\App\Controller\TokenController',
-            'method'     => 'requestToken',
+            'controller' => '\App\Controller\LoginController',
+            'method'     => 'login',
         ],
         [
             'path'       => '/bitrix/token/validity',
-            'controller' => '\App\Controller\TokenController',
+            'controller' => '\Controller\TokenController',
             'method'     => 'checkToken',
         ],
         [

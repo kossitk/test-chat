@@ -1,9 +1,7 @@
 <?php
 
-namespace Response;
+namespace App\Response;
 
-
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class Response {
 

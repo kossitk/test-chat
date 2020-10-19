@@ -1,0 +1,22 @@
+{
+  "name": "kossitk/chat",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kossi",
+      "email": "kossitk@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  },
+  "require": {
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "gemorroj/xbbcode": "dev-master"
+  }
+}
