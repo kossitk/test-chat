@@ -3,28 +3,37 @@
 namespace App\Router;
 
 
+use App\Database\Security;
+use App\Response\RedirectResponse;
 use App\Response\Response;
 
 class Router
 {
+    private $loginPath = '/login';
 
     private $routes = [
         [
-            'path'       => '/',
-            'controller' => '\App\Controller\LoginController',
+            'path'       => '/login',
+            'controller' => '\App\Controller\SecurityController',
             'method'     => 'login',
         ],
         [
-            'path'       => '/bitrix/token/validity',
-            'controller' => '\Controller\TokenController',
-            'method'     => 'checkToken',
+            'path'       => '/logout',
+            'controller' => '\App\Controller\SecurityController',
+            'method'     => 'logout',
         ],
         [
-            'path'       => '/bitrix/token/refresh',
-            'controller' => '\App\Controller\TokenController',
-            'method'     => 'refreshToken',
+            'path'       => '/register',
+            'controller' => '\App\Controller\SecurityController',
+            'method'     => 'register',
+        ],
+        [
+            'path'       => '/',
+            'controller' => '\App\Controller\HomeController',
+            'method'     => 'home',
         ],
     ];
+
 
     public function __construct()
     {
@@ -37,12 +46,21 @@ class Router
     public function resolve($path)
     {
         $found = false;
+        $response = null;
+        $path = $path == '' ? '/' : $path; // Fix empty path
+        $security = new Security();
+
+        if (!$security->isGranted($path))
+        {
+            return new RedirectResponse($this->loginPath);
+        }
 
         foreach ($this->routes as $route) {
-            if ($route['path'] == $path) {
+            if ($route['path'] == $path) { // TODO: Add regex validation
                 $controller = new $route['controller']();
-                $response   = $controller->{$route['method']}();
                 $found      = true;
+
+                $response   = $controller->{$route['method']}();
                 break;
             }
         }
@@ -57,4 +75,6 @@ class Router
 
         return $response;
     }
+
+
 }

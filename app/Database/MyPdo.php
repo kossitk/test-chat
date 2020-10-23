@@ -3,13 +3,10 @@
 namespace App\Database;
 
 
+use App\Config\Configuration;
+
 class MyPdo
 {
-
-    protected $databaseName = "kossi_migration";
-    protected $databaseHost = "localhost";
-    protected $databaseUsername = "chat";
-    protected $databasePassword = "test";
 
     /** @var \PDO */
     protected $pdo;
@@ -21,14 +18,13 @@ class MyPdo
 
     public static function getInstance()
     {
-        return "kossi";
         if (!isset(self::$instance)) { // Si on n'a pas encore instancié notre classe.
             self::$instance = new self; // On s'instancie nous-mêmes. :)
             $instance         = self::$instance;
-            $databaseName     = $instance->databaseName;
-            $databaseHost     = $instance->databaseHost;
-            $databaseUsername = $instance->databaseUsername;
-            $databasePassword = $instance->databasePassword;
+            $databaseName     = Configuration::DB_NAME;
+            $databaseHost     = Configuration::DB_HOST;
+            $databaseUsername = Configuration::DB_USER;
+            $databasePassword = Configuration::DB_PASS;
 
             try {
                 $conn = new \PDO("mysql:host=$databaseHost;dbname=$databaseName", $databaseUsername, $databasePassword);

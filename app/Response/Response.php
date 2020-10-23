@@ -21,12 +21,8 @@ class Response {
     protected $statusCode;
 
 
-    public function __construct($content = '', int $status = 200, array $headers = [], bool $json = false)
+    public function __construct($content = '', int $status = 200, array $headers = [])
     {
-        if ($json) {
-            $content = json_encode($content);
-            $headers['Content-Type'] = 'application/json';
-        }
         $this->headers = $headers;
 
         $this->content = $content;
@@ -64,8 +60,13 @@ class Response {
         // headers
         foreach ($this->headers as $name => $values) {
             $replace = 0 === strcasecmp($name, 'Content-Type');
-            foreach ($values as $value) {
-                header($name.': '.$value, $replace, $this->statusCode);
+            if (is_array($values)){
+                foreach ($values as $value) {
+                    header($name.': '.$value, $replace, $this->statusCode);
+                }
+            }
+            else{
+                header($name.': '.$values, $replace, $this->statusCode);
             }
         }
 

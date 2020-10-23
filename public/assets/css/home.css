@@ -1,0 +1,39 @@
+html{
+    height: 100%;
+}
+body{
+    min-height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+.connected-user{
+    background-color: #f2f2f2;
+}
+.discussions{
+    width: 30%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-right: solid #eeeeee 1px;
+}
+.chat{
+    flex-shrink: 1;
+    flex-grow: 1;
+    background-image: url(../img/chat-background.png);
+    background-position: top left;
+    background-repeat: repeat;
+}
+.discussion {
+    padding: 0.5rem 1em;
+    width: auto;
+    cursor: pointer;
+}
+.discussion:hover {
+    background-color: #f0f0f0;
+}
+.user-icon img{
+    height: 45px;
+    width: auto;
+}
+.discussion .infos{
+    border-bottom: solid #eeeeee 1px;
+}
