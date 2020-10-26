@@ -63,6 +63,8 @@ class Security
         if (isset($_SESSION['user']) && isset($_SESSION['user']['id'])) {
             $this->infos     = $_SESSION['user'];
             $this->connected = true;
+            $userModel = new User();
+            $userModel->lastActionUpdate($_SESSION['user']['id']);
         } else {
             $this->infos     = [];
             $this->connected = false;
@@ -71,7 +73,7 @@ class Security
 
     public function loginUser($login, $password)
     {
-        try {
+        //try {
             $model = new User();
             $user = $model->findBy(['email' => $login], [], true);
             if ($user) {
@@ -80,15 +82,17 @@ class Security
                     $this->infos = $user;
                     $this->connected = true;
                     $_SESSION['user'] = $this->infos;
+                    $userModel = new User();
+                    $userModel->lastActionUpdate($user['id']);
                     return true;
                 }
             }
             $this->infos = [];
             $this->connected = false;
-        } catch (\Exception $exception) {
+        /*} catch (\Exception $exception) {
             $this->infos = [];
             $this->connected = false;
-        }
+        }*/
 
         return false;
     }

@@ -73,9 +73,9 @@ abstract class Model
             return "`" . $key . "` = :$key";
         }, array_keys($params)));
         $order = implode(', ', array_map(function ($key){
-            return "`" . $key . "` = :$key";
+            return "`" . $key . "` ASC";
         }, array_keys($params)));
-        $stmt = $this->connexion->prepare("SELECT * FROM `" . $this->table . "` " . $where . " " . $order);
+        $stmt = $this->connexion->prepare("SELECT * FROM `" . $this->table . "` WHERE " . $where . " " . (strlen($order) > 2 ? ' ORDER BY ' : ' ' ).  $order);
 
         foreach ($params as $key => $value){
             $stmt->bindValue(":$key", $value);

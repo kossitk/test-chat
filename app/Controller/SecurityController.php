@@ -17,11 +17,35 @@ class SecurityController extends AbstractController
     public function login()
     {
         $username = '';
-        if (isset($_POST['username']) && isset($_POST['password'])) {
+        $errorMessage = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $validations = [
+                'email'  => 'email',
+                'password'  => 'anything',
+            ];
+            $sanitation = [
+                'email'     => 'email',
+                'password'  => false,
+            ];
+            $required = ['email', 'password'];
+            $validator = new UserInputFilter($validations, $required, $sanitation);
+            $userInput = $validator->sanitize($_POST);
+
+            $valid = $validator->validate($userInput);
+            $formErrors = $validator->getErrors();
+
+            if ($valid) {
+                $security = new Security();
+                if ($security->loginUser($userInput['email'], $userInput['password'])){
+                    return new RedirectResponse('/');
+                }
+            }
+            $errorMessage = 'Bad credentials';
         }
 
         return $this->renderView('login.php', [
             'username' => $username,
+            'errorMessage' => $errorMessage,
         ]);
     }
 

@@ -32,6 +32,41 @@ class Router
             'controller' => '\App\Controller\HomeController',
             'method'     => 'home',
         ],
+        [
+            'path'       => '/online',
+            'controller' => '\App\Controller\ChatController',
+            'method'     => 'online',
+        ],
+        [
+            'path'       => '/private-chat',
+            'controller' => '\App\Controller\ChatController',
+            'method'     => 'createChat',
+        ],
+        [
+            'path'       => '/create-group',
+            'controller' => '\App\Controller\ChatController',
+            'method'     => 'createGroup',
+        ],
+        [
+            'path'       => '/messages',
+            'controller' => '\App\Controller\MessagesController',
+            'method'     => 'getMessages',
+        ],
+        [
+            'path'       => '/messages-older',
+            'controller' => '\App\Controller\MessagesController',
+            'method'     => 'getOlderMessages',
+        ],
+        [
+            'path'       => '/add-message',
+            'controller' => '\App\Controller\MessagesController',
+            'method'     => 'addMessage',
+        ],
+        [
+            'path'       => '/unread-counter',
+            'controller' => '\App\Controller\MessagesController',
+            'method'     => 'getUnreadCounter',
+        ],
     ];
 
 

@@ -13,6 +13,10 @@ class Chat extends Model
     protected $membersTable = 'member';
     protected $usersTable = 'user';
 
+    /**
+     * @param $data
+     * @return bool|string
+     */
     public function createChat($data)
     {
         $pdo = $this->connexion;
@@ -31,7 +35,7 @@ class Chat extends Model
                 foreach ($data['members'] as $member){
                     $memberModel->addMember($chatId, $member, true);
                 }
-
+                $pdo->commit();
                 return $chatId;
             }
         } catch (\PDOException $e) {
@@ -45,6 +49,10 @@ class Chat extends Model
     }
 
 
+    /**
+     * @param $user
+     * @return array
+     */
     public function getUserChats($user)
     {
         $stmt = $this->connexion->prepare("
@@ -89,6 +97,62 @@ class Chat extends Model
         }
 
         return $chats;
+    }
+
+    /**
+     * @param $chatUuid $chatUuid
+     * @param $user
+     * @return array
+     */
+    public function findUserChatByUuid($chatUuid, $user)
+    {
+        $stmt = $this->connexion->prepare("
+            SELECT  t.*
+            FROM `" . $this->table . "` AS t 
+                INNER JOIN `" . $this->membersTable . "` AS m ON t.id = m.chat_id 
+            WHERE t.uuid = :chatUuid AND m.user_id = :member
+        ");
+        $stmt->bindParam(":member", $user);
+        $stmt->bindParam(":chatUuid", $chatUuid);
+        $stmt->execute();
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+
+        return $stmt->fetch();
+    }
+
+
+    /**
+     * @param $user1
+     * @param $user2
+     * @return bool|array
+     */
+    public function hasPrivateChat($user1, $user2)
+    {
+        $stmt = $this->connexion->prepare("
+            SELECT user1_private.* 
+             FROM (SELECT  t.id AS talk1, t.uuid as t1uuid
+                FROM `" . $this->table . "` AS t 
+                    INNER JOIN `" . $this->membersTable . "` AS m ON t.id = m.chat_id 
+                WHERE m.user_id = :user1 AND t.private = 1) AS user1_private INNER JOIN
+                 (SELECT  t.id AS talk2
+                FROM `" . $this->table . "` AS t 
+                    INNER JOIN `" . $this->membersTable . "` AS m ON t.id = m.chat_id 
+                WHERE m.user_id = :user2 AND t.private = 1) AS user2_private on user1_private.talk1 = user2_private.talk2
+        ");
+        $stmt->bindParam(":user1", $user1);
+        $stmt->bindParam(":user2", $user2);
+
+        $stmt->execute();
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+
+        $results = $stmt->fetchAll();
+
+        if (count($results) > 0) {
+            return $results[0]['t1uuid'];
+        }
+
+        return false;
+
     }
 
 

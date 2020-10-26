@@ -5,20 +5,22 @@ namespace App\Model;
 
 
 use App\Database\MyPdo;
+use App\Helper\PasswordEncoder;
 use Ramsey\Uuid\Uuid;
 
 class User extends Model
 {
     protected $table = 'user';
 
-    const INACTIVE_TIME_OUT = '-5 min';
+    const INACTIVE_TIME_OUT = '-1 day';
+//    const INACTIVE_TIME_OUT = '-5 min';
 
     public function createUser($data)
     {
         try {
             $stmt = $this->connexion->prepare("INSERT INTO `" . $this->table . "` (`email`, `password`, `pseudo`, `uuid`, `roles`, `last_action`) VALUES (:email, :password, :pseudo, :uuid, :roles, :last_action)");
             $stmt->bindValue(":email", $data['email']);
-            $stmt->bindValue(":password", $data['password']);
+            $stmt->bindValue(":password", PasswordEncoder::encode($data['password']));
             $stmt->bindValue(":pseudo", $data['username']);
             $stmt->bindValue(":roles", $data['roles']);
             $stmt->bindValue(":uuid", $this->getUuid());
@@ -59,9 +61,9 @@ class User extends Model
     {
         $stmt = $this->connexion->prepare("
             SELECT  u.`pseudo`, u.`uuid`
-            FROM `" . $this->table . "` AS t 
-            WHERE m.last_action > :timeout
-            ORDER BY m.last_action DESC "
+            FROM `" . $this->table . "` AS u 
+            WHERE u.last_action > :timeout
+            ORDER BY u.last_action DESC "
         );
         $date = new \DateTime();
         $date->modify(self::INACTIVE_TIME_OUT);
