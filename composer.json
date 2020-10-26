@@ -19,6 +19,6 @@
     "ext-curl": "*",
     "ext-json": "*",
     "gemorroj/xbbcode": "dev-master",
-    "ramsey/uuid": "^4.0@dev",
+    "ramsey/uuid": "^4.0@dev"
   }
 }

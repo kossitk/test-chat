@@ -4,6 +4,7 @@ namespace App\Router;
 
 
 use App\Database\Security;
+use App\Model\User;
 use App\Response\RedirectResponse;
 use App\Response\Response;
 
@@ -88,6 +89,11 @@ class Router
         if (!$security->isGranted($path))
         {
             return new RedirectResponse($this->loginPath);
+        }
+
+        if ($security->isConnected()){
+            $userModel = new User();
+            $userModel->lastActionUpdate($security->getInfos()['id']);
         }
 
         foreach ($this->routes as $route) {

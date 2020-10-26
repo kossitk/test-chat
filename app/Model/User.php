@@ -12,8 +12,7 @@ class User extends Model
 {
     protected $table = 'user';
 
-    const INACTIVE_TIME_OUT = '-1 day';
-//    const INACTIVE_TIME_OUT = '-5 min';
+    const INACTIVE_TIME_OUT = '-5 min';
 
     public function createUser($data)
     {
